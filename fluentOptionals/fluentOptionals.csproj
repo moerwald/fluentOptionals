@@ -6,7 +6,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>netstandard1.1;net45</TargetFrameworks>
 		<PackageId>FluentOptionals</PackageId>
-		<PackageVersion>$version$</PackageVersion>
+		<PackageVersion>1.0.0</PackageVersion>
 		<Authors>David Leitner</Authors>
 		<Description>A lightweight &amp; fluent Option/Optional/Maybe Implementation supporting .NET Standard</Description>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>

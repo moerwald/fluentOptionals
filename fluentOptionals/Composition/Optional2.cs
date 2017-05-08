@@ -2,7 +2,7 @@
 
 namespace FluentOptionals.Composition
 {
-    public struct Optional<T1, T2> : 
+    public struct Optional<T1, T2> :
         IEquatable<Optional<T1, T2>>
     {
         private readonly Optional<T1> _o1;
@@ -16,7 +16,7 @@ namespace FluentOptionals.Composition
 
         public bool IsSome => _o1.IsSome() && _o2.IsSome();
         public bool IsNone => !IsSome;
-        
+
         public void Match(Action<T1, T2> some, Action none)
         {
             if (IsSome)
@@ -26,24 +26,36 @@ namespace FluentOptionals.Composition
         }
 
         public TReturn Match<TReturn>(Func<T1, T2, TReturn> some, Func<TReturn> none)
-            => IsSome 
+        {
+            return IsSome
                 ? some(_o1.ValueOrDefault(), _o2.ValueOrDefault())
                 : none();
+        }
 
         public void IfSome(Action<T1, T2> handle)
-            => Match(handle, () => { });
+        {
+            Match(handle, () => { });
+        }
 
         public void IfNone(Action handle)
-            => Match((o1, o2) => { }, handle);
+        {
+            Match((o1, o2) => { }, handle);
+        }
 
         public Optional<T1, T2, T3> Join<T3>(T3 valueToJoin)
-            => new Optional<T1, T2, T3>(_o1, _o2, Optional.From(valueToJoin));
+        {
+            return new Optional<T1, T2, T3>(_o1, _o2, Optional.From(valueToJoin));
+        }
 
         public Optional<T1, T2, T3> Join<T3>(T3 valueToJoin, Func<T3, bool> condition)
-            => new Optional<T1, T2, T3>(_o1, _o2, Optional.From(valueToJoin, condition));
+        {
+            return new Optional<T1, T2, T3>(_o1, _o2, Optional.From(valueToJoin, condition));
+        }
 
         public Optional<T1, T2, T3> Join<T3>(Optional<T3> optionalToJoin)
-            => new Optional<T1, T2, T3>(_o1, _o2, optionalToJoin);
+        {
+            return new Optional<T1, T2, T3>(_o1, _o2, optionalToJoin);
+        }
 
         #region Equals
 

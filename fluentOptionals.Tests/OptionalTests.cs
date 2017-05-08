@@ -9,8 +9,6 @@ namespace FluentOptionals.Tests
     [TestFixture]
     public class OptionalTests
     {
-        #region ToNone
-
         [Test]
         public void None_ReturnsNoneOptional()
         {
@@ -23,10 +21,6 @@ namespace FluentOptionals.Tests
             ((object) null).ToNone().ShouldBeNone();
         }
 
-        #endregion 
-
-        #region ToSome
-
         [Test]
         public void Some_ReturnsSomeOptional()
         {
@@ -34,52 +28,9 @@ namespace FluentOptionals.Tests
         }
 
         [Test]
-
-        public void ToSome_WhenNullIsGiven_ThenSomeCreationFailedExceptionGetsThrown()
-        {
-            Action nullToSome = () => ((object) null).ToSome();
-
-            nullToSome.ShouldThrow<SomeCreationOfNullException>();
-        }
-
-        #endregion
-
-        #region ToOptional
-
-        [Test]
-        public void ToOptional_WhenNullIsGiven_ThenNoneGetsReturned()
-        {
-            ((object) null).ToOptional().ShouldBeNone();
-        }
-
-        [Test]
-        public void ToOptional_WhenValuesGiven_ThenSomeGetsReturned()
-        {
-            "test".ToOptional().ShouldBeSome();
-        }
-
-        [Test]
         public void ToOptional_WhenEmptyStringIsGiven_ThenSomeGetsReturned()
         {
             string.Empty.ToOptional().ShouldBeSome();
-        }
-
-        [Test]
-        public void ToOptional_WhenPredicateIsTrue_ThenSomeGetsReturned()
-        {
-            10.ToOptional(x => x == 10).ShouldBeSome();
-        }
-
-        [Test]
-        public void ToOptional_WhenPredicateIsFalse_ThenNoneGetsReturned()
-        {
-            20.ToOptional(x => x == 10).ShouldBeNone();
-        }
-
-        [Test]
-        public void ToOptional_WhenPredicateForNullIsGiven_ThenNoneGetsReturned()
-        {
-            ((string) null).ToOptional(x => x.Length == 10).ShouldBeNone();
         }
 
         [Test]
@@ -94,7 +45,43 @@ namespace FluentOptionals.Tests
             new int?(10).ToOptional().ShouldBeSome();
         }
 
-        #endregion
+        [Test]
+        public void ToOptional_WhenNullIsGiven_ThenNoneGetsReturned()
+        {
+            ((object) null).ToOptional().ShouldBeNone();
+        }
+
+        [Test]
+        public void ToOptional_WhenPredicateForNullIsGiven_ThenNoneGetsReturned()
+        {
+            ((string) null).ToOptional(x => x.Length == 10).ShouldBeNone();
+        }
+
+        [Test]
+        public void ToOptional_WhenPredicateIsFalse_ThenNoneGetsReturned()
+        {
+            20.ToOptional(x => x == 10).ShouldBeNone();
+        }
+
+        [Test]
+        public void ToOptional_WhenPredicateIsTrue_ThenSomeGetsReturned()
+        {
+            10.ToOptional(x => x == 10).ShouldBeSome();
+        }
+
+        [Test]
+        public void ToOptional_WhenValuesGiven_ThenSomeGetsReturned()
+        {
+            "test".ToOptional().ShouldBeSome();
+        }
+
+        [Test]
+        public void ToSome_WhenNullIsGiven_ThenSomeCreationFailedExceptionGetsThrown()
+        {
+            Action nullToSome = () => ((object) null).ToSome();
+
+            nullToSome.ShouldThrow<SomeCreationOfNullException>();
+        }
     }
 
     #endregion
@@ -102,9 +89,6 @@ namespace FluentOptionals.Tests
     [TestFixture]
     public class Optional1Tests
     {
-        private Optional<int> _some;
-        private Optional<int> _none;
-
         [SetUp]
         public void Setup()
         {
@@ -112,47 +96,8 @@ namespace FluentOptionals.Tests
             _none = Optional.None<int>();
         }
 
-        #region IfSome
-
-        [Test]
-        public void IfSome_HandleIsNotCalledOnNone()
-        {
-            var handleCalled = false;
-            _none.IfSome(_ => handleCalled = true);
-
-            handleCalled.Should().Be(false);
-        }
-
-        [Test]
-        public void IfSome_HandleIsCalledOnSome()
-        {
-            var handleCalled = false;
-            _some.IfSome(_ => handleCalled = true);
-
-            handleCalled.Should().Be(true);
-        }
-
-        [Test]
-        public void IfSome_HandleReturnsRightValue()
-        {
-            var returnedValue = 0;
-            _some.IfSome(i => returnedValue = i);
-
-            returnedValue.Should().Be(1);
-        }
-
-        #endregion
-
-        #region IfNone
-
-        [Test]
-        public void IfNone_HandleIsNotCalledOnSome()
-        {
-            var handleCalled = false;
-            _some.IfNone(() => handleCalled = true);
-
-            handleCalled.Should().Be(false);
-        }
+        private Optional<int> _some;
+        private Optional<int> _none;
 
         [Test]
         public void IfNone_HandleIsCalledOnNone()
@@ -163,9 +108,14 @@ namespace FluentOptionals.Tests
             handleCalled.Should().Be(true);
         }
 
-        #endregion
+        [Test]
+        public void IfNone_HandleIsNotCalledOnSome()
+        {
+            var handleCalled = false;
+            _some.IfNone(() => handleCalled = true);
 
-        #region ValueOr
+            handleCalled.Should().Be(false);
+        }
 
         [Test]
         public void IfNone_WhenOptionalIsNone_ThenValueFromHandleGetsReturned()
@@ -193,77 +143,61 @@ namespace FluentOptionals.Tests
         }
 
         [Test]
-        public void ValueOrThrow_WhenOptionalIsSome_ThenValueGetsReturned()
+        public void IfSome_HandleIsCalledOnSome()
         {
-            _some.ValueOrThrow(new TestException()).Should().NotBe(20);
+            var handleCalled = false;
+            _some.IfSome(_ => handleCalled = true);
+
+            handleCalled.Should().Be(true);
         }
 
         [Test]
-        public void ValueOrThrow_WhenOptionalIsValue_ThenValueGetsThrown()
+        public void IfSome_HandleIsNotCalledOnNone()
         {
-            Action noneThrowsException = () => _none.ValueOrThrow(new TestException());
+            var handleCalled = false;
+            _none.IfSome(_ => handleCalled = true);
 
-            noneThrowsException.ShouldThrow<Exception>();
-        }
-
-        #endregion
-
-        #region Match
-
-        [Test]
-        public void Match_WhenOptionalHasValue_SomeHandleGetsCalled()
-        {
-            bool someHandleCalled = false, noneHandleCalled = false;
-
-            _some.Match(
-                some: _ => someHandleCalled = true,
-                none: () => noneHandleCalled = true);
-
-            someHandleCalled.Should().BeTrue();
-            noneHandleCalled.Should().BeFalse();
+            handleCalled.Should().Be(false);
         }
 
         [Test]
-        public void Match_WhenOptionalHasNoValue_NoneHandleGetsCalled()
+        public void IfSome_HandleReturnsRightValue()
         {
-            bool someHandleCalled = false, noneHandleCalled = false;
+            var returnedValue = 0;
+            _some.IfSome(i => returnedValue = i);
 
-            _none.Match(
-                some: _ => someHandleCalled = true,
-                none: () => noneHandleCalled = true);
-
-            noneHandleCalled.Should().BeTrue();
-            someHandleCalled.Should().BeFalse();
+            returnedValue.Should().Be(1);
         }
 
         [Test]
-        public void Match_WhenOptionalHasValue_SomeHandleGetsReturned()
+        public void ImplicitOperator_NullGetsNone()
         {
-            _some.Match(
-                some: _ => 20,
-                none: () => 30).Should().Be(20);
+            Optional<object> optional = null;
+            optional.IfSome(_ => Assert.Fail());
         }
 
         [Test]
-        public void Match_WhenOptionalHasNoValue_NoneHandleGetsReturned()
+        public void ImplicitOperator_ReferenceTypeGetsSome()
         {
-            _none.Match(
-                some: _ => 20,
-                none: () => 30).Should().Be(30);
+            Optional<DateTime> optional = DateTime.Now;
+            optional.IfNone(Assert.Fail);
         }
-
 
         [Test]
-        public void Match_CanReturnNull()
+        public void ImplicitOperator_ValueTypeGetsSome()
         {
-            _none.Match(
-                some: _ => null as string,
-                none: () => null as string).Should().Be(null);
+            Optional<int> optional = 15;
+            optional.IfNone(Assert.Fail);
         }
 
-        #endregion
+        [Test]
+        public void Map_WhenMappedOptionalReturnsNull_ThenNoneGetsReturned()
+        {
+            var resultOptional = 10.ToSome().Map<int, string>(_ => null);
 
-        #region Map
+            resultOptional.ShouldBeNone();
+            typeof(Optional<string>).Should().Be(resultOptional.GetType());
+        }
 
         [Test]
         public void Map_WhenOptionalIsNone_ThenNoneGetsReturnedAgain()
@@ -283,23 +217,55 @@ namespace FluentOptionals.Tests
             typeof(Optional<string>).Should().Be(resultOptional.GetType());
         }
 
-        [Test]
-        public void Map_WhenMappedOptionalReturnsNull_ThenNoneGetsReturned()
-        {
-            var resultOptional = 10.ToSome().Map<int, string>(_ => null);
 
-            resultOptional.ShouldBeNone();
-            typeof(Optional<string>).Should().Be(resultOptional.GetType());
+        [Test]
+        public void Match_CanReturnNull()
+        {
+            _none.Match(
+                _ => null as string,
+                () => null as string).Should().Be(null);
         }
 
-        #endregion
+        [Test]
+        public void Match_WhenOptionalHasNoValue_NoneHandleGetsCalled()
+        {
+            bool someHandleCalled = false, noneHandleCalled = false;
 
-        #region Shift
+            _none.Match(
+                _ => someHandleCalled = true,
+                () => noneHandleCalled = true);
+
+            noneHandleCalled.Should().BeTrue();
+            someHandleCalled.Should().BeFalse();
+        }
 
         [Test]
-        public void Shift_WhenGivenPredicateIsTrue_ThenNoneGetsReturned()
+        public void Match_WhenOptionalHasNoValue_NoneHandleGetsReturned()
         {
-            10.ToSome().Filter(i => i > 5).ShouldBeNone();
+            _none.Match(
+                _ => 20,
+                () => 30).Should().Be(30);
+        }
+
+        [Test]
+        public void Match_WhenOptionalHasValue_SomeHandleGetsCalled()
+        {
+            bool someHandleCalled = false, noneHandleCalled = false;
+
+            _some.Match(
+                _ => someHandleCalled = true,
+                () => noneHandleCalled = true);
+
+            someHandleCalled.Should().BeTrue();
+            noneHandleCalled.Should().BeFalse();
+        }
+
+        [Test]
+        public void Match_WhenOptionalHasValue_SomeHandleGetsReturned()
+        {
+            _some.Match(
+                _ => 20,
+                () => 30).Should().Be(20);
         }
 
         [Test]
@@ -309,38 +275,33 @@ namespace FluentOptionals.Tests
         }
 
         [Test]
+        public void Shift_WhenGivenPredicateIsTrue_ThenNoneGetsReturned()
+        {
+            10.ToSome().Filter(i => i > 5).ShouldBeNone();
+        }
+
+        [Test]
         public void Shift_WhenNoneIsShifted_ThenNoneGetsReturned()
         {
             10.ToNone().Filter(i => i > 15).ShouldBeNone();
         }
 
-        #endregion 
-
-        #region Implicit Operator
-
         [Test]
-        public void ImplicitOperator_NullGetsNone()
+        public void ValueOrThrow_WhenOptionalIsSome_ThenValueGetsReturned()
         {
-            Optional<object> optional = (object)null;
-            optional.IfSome(_ => Assert.Fail());
+            _some.ValueOrThrow(new TestException()).Should().NotBe(20);
         }
 
         [Test]
-        public void ImplicitOperator_ValueTypeGetsSome()
+        public void ValueOrThrow_WhenOptionalIsValue_ThenValueGetsThrown()
         {
-            Optional<int> optional = 15;
-            optional.IfNone(Assert.Fail);
-        }
+            Action noneThrowsException = () => _none.ValueOrThrow(new TestException());
 
-        [Test]
-        public void ImplicitOperator_ReferenceTypeGetsSome()
-        {
-            Optional<DateTime> optional = DateTime.Now;
-            optional.IfNone(Assert.Fail);
+            noneThrowsException.ShouldThrow<Exception>();
         }
-
-        #endregion
     }
 
-    public class TestException : Exception { }
+    public class TestException : Exception
+    {
+    }
 }

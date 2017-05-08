@@ -53,7 +53,10 @@ namespace FluentOptionals
             _value = value;
         }
 
-        public static implicit operator Optional<T>(T value) => Optional.From(value);
+        public static implicit operator Optional<T>(T value)
+        {
+            return Optional.From(value);
+        }
 
         private readonly bool _isSome;
         private readonly T _value;
@@ -67,15 +70,29 @@ namespace FluentOptionals
         }
 
         public TReturn Match<TReturn>(Func<T, TReturn> some, Func<TReturn> none)
-            => _isSome ? some(_value) : none();
+        {
+            return _isSome ? some(_value) : none();
+        }
 
-        public void IfSome(Action<T> handle) => Match(handle, () => { });
+        public void IfSome(Action<T> handle)
+        {
+            Match(handle, () => { });
+        }
 
-        public void IfNone(Action handle) => Match(_ => { }, handle);
+        public void IfNone(Action handle)
+        {
+            Match(_ => { }, handle);
+        }
 
-        public T ValueOr(Func<T> handle) => Match(_ => _, handle);
+        public T ValueOr(Func<T> handle)
+        {
+            return Match(_ => _, handle);
+        }
 
-        public T ValueOr(T value) => Match(_ => _, () => value);
+        public T ValueOr(T value)
+        {
+            return Match(_ => _, () => value);
+        }
 
         public T ValueOrThrow(Exception exception)
         {
@@ -84,30 +101,48 @@ namespace FluentOptionals
         }
 
         public Optional<T, T2> Join<T2>(T2 valueToJoin)
-            => new Optional<T, T2>(this, Optional.From(valueToJoin));
+        {
+            return new Optional<T, T2>(this, Optional.From(valueToJoin));
+        }
 
         public Optional<T, T2> Join<T2>(T2 valueToJoin, Func<T2, bool> condition)
-            => new Optional<T, T2>(this, Optional.From(valueToJoin, condition));
+        {
+            return new Optional<T, T2>(this, Optional.From(valueToJoin, condition));
+        }
 
         public Optional<T, T2> Join<T2>(Optional<T2> optionalToJoin)
-            => new Optional<T, T2>(this, optionalToJoin);
+        {
+            return new Optional<T, T2>(this, optionalToJoin);
+        }
 
         #region Compare/Equals
 
         public int CompareTo(Optional<T> other)
-            => !_isSome && !other._isSome
-                ? 0 : _isSome && other._isSome
+        {
+            return !_isSome && !other._isSome
+                ? 0
+                : _isSome && other._isSome
                     ? Comparer<T>.Default.Compare(_value, other._value)
-                    : _isSome ? -1 : 1;
+                    : _isSome
+                        ? -1
+                        : 1;
+        }
 
         public int CompareTo(T other)
-            => !_isSome ? -1 : Comparer<T>.Default.Compare(_value, other);
+        {
+            return !_isSome ? -1 : Comparer<T>.Default.Compare(_value, other);
+        }
 
-        public bool Equals(Optional<T> other) 
-            => !_isSome && !other._isSome || _isSome && other._isSome && EqualityComparer<T>.Default.Equals(_value, other._value);
+        public bool Equals(Optional<T> other)
+        {
+            return !_isSome && !other._isSome || _isSome && other._isSome &&
+                   EqualityComparer<T>.Default.Equals(_value, other._value);
+        }
 
         public bool Equals(T other)
-            => _isSome && EqualityComparer<T>.Default.Equals(_value, other);
+        {
+            return _isSome && EqualityComparer<T>.Default.Equals(_value, other);
+        }
 
         #endregion
     }

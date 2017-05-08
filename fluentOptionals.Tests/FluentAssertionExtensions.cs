@@ -6,10 +6,14 @@ namespace FluentOptionals.Tests
     public static class FluentAssertionExtensions
     {
         public static void ShouldBeNone<T>(this Optional<T> optional)
-            => (!optional.IsSome()).Should().BeTrue();
+        {
+            (!optional.IsSome()).Should().BeTrue();
+        }
 
         public static void ShouldBeSome<T>(this Optional<T> optional)
-            => optional.IsSome().Should().BeTrue();
+        {
+            optional.IsSome().Should().BeTrue();
+        }
     }
 
     public static class TestHelper

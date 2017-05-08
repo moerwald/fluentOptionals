@@ -2,7 +2,7 @@
 
 namespace FluentOptionals.Composition
 {
-    public struct Optional<T1, T2, T3> : 
+    public struct Optional<T1, T2, T3> :
         IEquatable<Optional<T1, T2, T3>>
     {
         private readonly Optional<T1> _o1;
@@ -18,7 +18,7 @@ namespace FluentOptionals.Composition
 
         public bool IsSome => _o1.IsSome() && _o2.IsSome() && _o3.IsSome();
         public bool IsNone => !IsSome;
-        
+
         public void Match(Action<T1, T2, T3> some, Action none)
         {
             if (IsSome)
@@ -28,24 +28,36 @@ namespace FluentOptionals.Composition
         }
 
         public TReturn Match<TReturn>(Func<T1, T2, T3, TReturn> some, Func<TReturn> none)
-            => IsSome 
+        {
+            return IsSome
                 ? some(_o1.ValueOrDefault(), _o2.ValueOrDefault(), _o3.ValueOrDefault())
                 : none();
+        }
 
         public void IfSome(Action<T1, T2, T3> handle)
-            => Match(handle, () => { });
+        {
+            Match(handle, () => { });
+        }
 
         public void IfNone(Action handle)
-            => Match((o1, o2, o3) => { }, handle);
+        {
+            Match((o1, o2, o3) => { }, handle);
+        }
 
         public Optional<T1, T2, T3, T4> Join<T4>(T4 valueToJoin)
-            => new Optional<T1, T2, T3, T4>(_o1, _o2, _o3, Optional.From(valueToJoin));
+        {
+            return new Optional<T1, T2, T3, T4>(_o1, _o2, _o3, Optional.From(valueToJoin));
+        }
 
         public Optional<T1, T2, T3, T4> Join<T4>(T4 valueToJoin, Func<T4, bool> condition)
-            => new Optional<T1, T2, T3, T4>(_o1, _o2, _o3, Optional.From(valueToJoin, condition));
+        {
+            return new Optional<T1, T2, T3, T4>(_o1, _o2, _o3, Optional.From(valueToJoin, condition));
+        }
 
         public Optional<T1, T2, T3, T4> Join<T4>(Optional<T4> optionalToJoin)
-            => new Optional<T1, T2, T3, T4>(_o1, _o2, _o3, optionalToJoin);
+        {
+            return new Optional<T1, T2, T3, T4>(_o1, _o2, _o3, optionalToJoin);
+        }
 
         #region Equals
 

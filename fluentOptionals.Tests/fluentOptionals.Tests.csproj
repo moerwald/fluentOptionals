@@ -69,16 +69,18 @@
     <Compile Include="FluentAssertionExtensions.cs" />
     <Compile Include="OptionalTests.cs" />
     <Compile Include="Linq\OptionalEnumerableExtensionsTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\fluentOptionals\fluentOptionals.csproj">
+    <ProjectReference Include="..\fluentOptionals\FluentOptionals.csproj">
       <Project>{003af762-0c13-4865-b807-39058bd388d0}</Project>
-      <Name>FluentOptionalStandard</Name>
+      <Name>FluentOptionals</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

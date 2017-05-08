@@ -44,10 +44,14 @@ namespace FluentOptionals.Linq
         }
 
         public static IEnumerable<Optional<T>> ToOptionalList<T>(this IEnumerable<T> source)
-            => source.Select(Optional.From);
+        {
+            return source.Select(Optional.From);
+        }
 
 
         public static IEnumerable<Optional<T>> ToOptionalList<T>(this IEnumerable<T> source, Func<T, bool> condition)
-            => source.Select(s => Optional.From(s, condition));
+        {
+            return source.Select(s => Optional.From(s, condition));
+        }
     }
 }
