@@ -75,9 +75,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\fluentOptionals\FluentOptionals.csproj">
-      <Project>{A1DBD4A0-0B9B-48D8-9C95-4D291AFAF391}</Project>
-      <Name>FluentOptionals</Name>
+    <ProjectReference Include="..\fluentOptionals\fluentOptionals.csproj">
+      <Project>{003af762-0c13-4865-b807-39058bd388d0}</Project>
+      <Name>FluentOptionalStandard</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>
